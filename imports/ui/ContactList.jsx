@@ -13,10 +13,13 @@ function ContactList() {
 
     const [success, setSuccess] = useState("");
 
-    const isLoading = useSubscribe("allContacts");
+    const isLoading = useSubscribe("contacts");
 
     const contacts = useFind(() => {
-        return ContactsCollection.find({}, { sort: { createdAt: -1 } });
+        return ContactsCollection.find(
+            { archived: { $ne: true } },
+            { sort: { createdAt: -1 } }
+        );
     });
 
     if (isLoading()) {
@@ -41,13 +44,13 @@ function ContactList() {
         }, 5000);
     };
 
-    const removeContact = (event, _id) => {
+    const archiveContact = (event, _id) => {
         event.preventDefault();
-        Meteor.call("contact.remove", { contactId: _id }, (errorResponse) => {
+        Meteor.call("contact.archive", { contactId: _id }, (errorResponse) => {
             if (errorResponse) {
                 showError({ message: errorResponse.error });
             } else {
-                showSuccess({ message: "Contact Successfully Removed." });
+                showSuccess({ message: "Contact Successfully Archived." });
             }
         });
     };
@@ -78,11 +81,11 @@ function ContactList() {
                         <a
                             href="#"
                             onClick={(event) =>
-                                removeContact(event, contact._id)
+                                archiveContact(event, contact._id)
                             }
                             className="inline-flex items-center shadow-sm px-2.5 py-0.5 border border-gray-300 text-sm leading-5 font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50"
                         >
-                            Remove
+                            Archive
                         </a>
                     </div>
                 </li>
