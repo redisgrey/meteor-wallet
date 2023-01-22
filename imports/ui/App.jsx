@@ -1,10 +1,12 @@
 import React from "react";
 import ContactForm from "./ContactForm";
 import ContactList from "./ContactList";
+import "../../client/main.css";
+import Header from "./Header";
 
 export const App = () => (
     <>
-        <h1>Meteor Wallet - Galaxy</h1>
+        <Header />
 
         <ContactForm />
 
